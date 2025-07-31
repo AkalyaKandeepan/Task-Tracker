@@ -1,6 +1,7 @@
 import json
 import shlex
 from datetime import datetime
+import sys
 
 FILE_NAME = "../Task-Tracker/task.json"
 
@@ -134,34 +135,35 @@ def main():
     print("Available commands: add, update, delete, mark-in-progress, mark-done, list")
 
     try:
-        while True:
-            user_input = input("\n> ")
-            if user_input.strip().lower() in ["exit", "quit"]:
-                break
+        args = sys.argv[1:]
 
-            command = shlex.split(user_input.strip())
-            if not command:
-                continue
+        if len(args) == 0:
+            print("Error: Task ID and new description required for 'update'")
+            raise SystemExit("Usage: python tasktracker.py command")
 
-            action = command[0].lower()
+        command = args
+        if not command:
+            return
 
-            if action == "add":
-                add_task(command)
-            elif action == "update":
-                update_task(command)
-            elif action == "delete":
-                delete_task(command)
-            elif action == "mark-in-progress":
-                change_status(command, "in-progress")
-            elif action == "mark-done":
-                change_status(command, "done")
-            elif action == "list":
-                list_tasks(command)
-            elif action == "exit" or action == "quit":
-                break
-            else:
-                print(f"❓ Unknown command: {action}")
-                print("Available commands: add, update, delete, mark-in-progress, mark-done, list")
+        action = command[0].lower()
+
+        if action == "add":
+            add_task(command)
+        elif action == "update":
+            update_task(command)
+        elif action == "delete":
+            delete_task(command)
+        elif action == "mark-in-progress":
+            change_status(command, "in-progress")
+        elif action == "mark-done":
+            change_status(command, "done")
+        elif action == "list":
+            list_tasks(command)
+        elif action == "exit" or action == "quit":
+            print("Exited.")
+        else:
+            print(f"❓ Unknown command: {action}")
+            print("Available commands: add, update, delete, mark-in-progress, mark-done, list")
 
     except KeyboardInterrupt:
         print("\nExited.")
